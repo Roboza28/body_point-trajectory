@@ -44,6 +44,8 @@ def runge_kutta(f, t0, y0, tEnd, tau):
         R = np.array([y0[0], y0[1], y0[2]])
         K1 = np.array([y0[3], y0[4], y0[5]])
         K2 = np.array([y0[6], y0[7], y0[8]])
+        # K1t = - q / np.linalg.norm(R)**3 * R - q / np.linalg.norm(R - Rs)**3
+        # K2t = -b / (m * j - b ** 2) * np.cross(K1, K2)
 
         # e_theory = np.array([np.cos(gamma_theory), np.sin(gamma_theory), 0])
         # e_practice = np.array([np.cos(gamma_practice), np.sin(gamma_practice), 0])
@@ -59,8 +61,18 @@ def runge_kutta(f, t0, y0, tEnd, tau):
         P1.append(K1N)
         K2N = K2 / np.linalg.norm(K2)
         P2.append(K2N)
+
+        # print(np.dot(K1N, K2N))
+        # print(np.dot(np.cross(R, K1), v + b/(m*j-b**2)*K2))
+        # print(np.linalg.norm(v + b/(m*j-b**2)*K2))
+        # print(np.dot(v + b/(m*j-b**2)*K2, v + b/(m*j-b**2)*K2))
+        # print(np.dot(v, v)+2*b*j/(m*j-b**2)**2*np.dot(K1, K2))
+        # print(np.dot(K2t, K1))
+        # f1 =
+
+
         # print(np.dot(R/np.linalg.norm(R), K2N))
-        print(w)
+        # print(w)
         # P3.append(v / np.linalg.norm(v))
         P3.append(w / np.linalg.norm(w))
         # P4.append(np.dot(v, e_practice))
@@ -70,7 +82,7 @@ def runge_kutta(f, t0, y0, tEnd, tau):
         # P1.append(P11)
         # P2.append(P22)
 
-        print(np.linalg.norm(np.dot(K1, K1)))
+        # print(np.linalg.norm(np.dot(K1, K1)))
 
     # return np.array(t), np.array(y), np.array(E), np.array(P1), np.array(P2)
     return np.array(t), np.array(y), np.array(P1), np.array(P2), np.array(P3) # , np.array(P4)
@@ -142,7 +154,7 @@ rx0, ry0, rz0 = 1, 0, 0
 k1x0, k1y0, k1z0 = 0, 0.1, -0.469403
 
 
-# y0 = np.array([5, 0, 0, 0., 0.322386, 0.0969581, 0, 0.48479, -1.44494])
+y0 = np.array([5, 0, 0, 0., 0.322386, 0.0969581, 0, 0.48479, -1.44494])
 # # y0 =  np.array([5, 0, 0,    0., 0.20, 0.0969581,    0, 0.48479, -1.44494])
 # # y0 =  np.array([5, 0, 0,    0., 0., 0.,    0, 0., -1.61193])
 
@@ -153,11 +165,11 @@ k1x0, k1y0, k1z0 = 0, 0.1, -0.469403
 # gamma_practice = 0
 # gamma_theory = math.atan(q * (m * j - b ** 2) / (b * k2y0 ** 2))
 
-y0 = np.array([rx0, ry0, rz0, k1x0, k1y0, k1z0, k2x0, k2y0, k2z0])
+# y0 = np.array([rx0, ry0, rz0, k1x0, k1y0, k1z0, k2x0, k2y0, k2z0])
 
 t0 = 0
-tEnd = 1
-# tEnd = 500
+# tEnd = 1
+tEnd = 500
 n = tEnd * 100
 tau = (tEnd - t0) / n
 # t = np.linspace(t0, tEnd, n)
