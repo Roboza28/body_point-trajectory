@@ -50,7 +50,7 @@ yC2 = [0,0,0]
 
 t0 = 0
 tEnd = 100
-n = tEnd * 10000
+n = tEnd * 1000
 tau = (tEnd-t0)/n
 t = np.linspace(t0,tEnd,n)
 

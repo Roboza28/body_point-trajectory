@@ -27,7 +27,8 @@ def rungeKutta(f, t0, y0, tEnd, tau):
                   K1 = np.array([y0[3],y0[4],y0[5]])
                   K2 = np.array([y0[6],y0[7],y0[8]])
                   
-                  
+
+                  # TODO: отслеживание улета, это пригодится
                   if np.linalg.norm(R)>20:
                       print('Все плохо')
                       break

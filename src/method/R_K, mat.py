@@ -54,7 +54,9 @@ def rungeKutta(f, t0, y0, tEnd, tau):
     return np.array(t), np.array(y)# , np.array(E)
 
 
-def f(t, y):
+def f(y):
+
+
     f = np.zeros([6])
     f[0] = y[1]
     f[1] = -A * (y[0]) / ((y[0] ** 2 + y[2] ** 2 + y[4] ** 2) ** (3 / 2)) \

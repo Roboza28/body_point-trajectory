@@ -2,10 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 #from scipy.integrate import *
 
-def angle_between(v1, v2):
-    dot_pr = v1.dot(v2)
-    norms = np.linalg.norm(v1) * np.linalg.norm(v2)
-    return np.rad2deg(np.arccos(dot_pr / norms))
 
 def f(t, y):    
     

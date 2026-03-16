@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 import numpy as np
 import pandas as pd
 # import matplotlib.pyplot as plt
@@ -5,28 +7,15 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from plotly.offline import plot
 import plotly.graph_objs as go
+from src.method.runge_kutta import rk4_step
+from src.models.target_1 import f_1_center
+from src.utils.utils import params_tuple
 
 
-def angle_between(v1, v2):
-    dot_pr = v1.dot(v2)
-    norms = np.linalg.norm(v1) * np.linalg.norm(v2)
-    return np.rad2deg(np.arccos(dot_pr / norms))
-
-
-def runge_kutta(f, t0, y0, tEnd, tau):
-    def increment(f, t, y, tau):
-        k1 = tau * f(t, y)
-        k2 = tau * f(t + (1 / 4) * tau, y + (1 / 4) * k1)
-        k3 = tau * f(t + (3 / 8) * tau, y + (3 / 32) * k1 + (9 / 32) * k2)
-        k4 = tau * f(t + (12 / 13) * tau, y + (1932 / 2197) * k1 - (7200 / 2197) * k2 + (7296 / 2197) * k3)
-        k5 = tau * f(t + tau, y + (439 / 216) * k1 - 8 * k2 + (3680 / 513) * k3 - (845 / 4104) * k4)
-        k6 = tau * f(t + (1 / 2) * tau,
-                     y - (8 / 27) * k1 + 2 * k2 - (3544 / 2565) * k3 + (1859 / 4104) * k4 - (11 / 40) * k5)
-        return (16 / 135) * k1 + (6656 / 12825) * k3 + (28561 / 56430) * k4 - (9 / 50) * k5 + (2 / 55) * k6
-
+def runge_kutta(func, t_start, y0, t_end, h, params_task):
     t = []
     y = []
-    t.append(t0)
+    t.append(t_start)
     y.append(y0)
 
     # E = []
@@ -35,15 +24,16 @@ def runge_kutta(f, t0, y0, tEnd, tau):
 
     P3, P4 = [], []
 
-    while t0 < tEnd:
-        y0 = y0 + increment(f, t0, y0, tau)
-        t0 = t0 + tau
-        t.append(t0)
+    while t_start < t_end:
+        y0 += rk4_step(func, y0, h, params_task)
+        t_start = t_start + h
+        t.append(t_start)
         y.append(y0)
 
-        R = np.array([y0[0], y0[1], y0[2]])
+        R  = np.array([y0[0], y0[1], y0[2]])
         K1 = np.array([y0[3], y0[4], y0[5]])
         K2 = np.array([y0[6], y0[7], y0[8]])
+
         # K1t = - q / np.linalg.norm(R)**3 * R - q / np.linalg.norm(R - Rs)**3
         # K2t = -b / (m * j - b ** 2) * np.cross(K1, K2)
 
@@ -68,7 +58,6 @@ def runge_kutta(f, t0, y0, tEnd, tau):
         # print(np.dot(v + b/(m*j-b**2)*K2, v + b/(m*j-b**2)*K2))
         # print(np.dot(v, v)+2*b*j/(m*j-b**2)**2*np.dot(K1, K2))
         # print(np.dot(K2t, K1))
-        # f1 =
 
 
         # print(np.dot(R/np.linalg.norm(R), K2N))
@@ -86,23 +75,6 @@ def runge_kutta(f, t0, y0, tEnd, tau):
 
     # return np.array(t), np.array(y), np.array(E), np.array(P1), np.array(P2)
     return np.array(t), np.array(y), np.array(P1), np.array(P2), np.array(P3) # , np.array(P4)
-
-
-def f(t, y):
-    f = np.zeros([9])
-    f[0] = 1 / (m * j - b ** 2) * (j * y[3] - b * y[6])
-    f[1] = 1 / (m * j - b ** 2) * (j * y[4] - b * y[7])
-    f[2] = 1 / (m * j - b ** 2) * (j * y[5] - b * y[8])
-
-    f[3] = - y[0] / ((y[0] ** 2 + y[1] ** 2 + y[2] ** 2) ** (3 / 2))
-    f[4] = - y[1] / ((y[0] ** 2 + y[1] ** 2 + y[2] ** 2) ** (3 / 2))
-    f[5] = - y[2] / ((y[0] ** 2 + y[1] ** 2 + y[2] ** 2) ** (3 / 2))
-
-    f[6] = -b / (m * j - b ** 2) * (y[4] * y[8] - y[5] * y[7])
-    f[7] = -b / (m * j - b ** 2) * (y[5] * y[6] - y[3] * y[8])
-    f[8] = -b / (m * j - b ** 2) * (y[3] * y[7] - y[4] * y[6])
-
-    return f
 
 
 # # Н.У.
@@ -174,8 +146,9 @@ n = tEnd * 100
 tau = (tEnd - t0) / n
 # t = np.linspace(t0, tEnd, n)
 
+params = params_tuple(m, j, b, q, [])
 # t, y, E, P1, P2 = runge_kutta(f, t0, y0, tEnd, tau)
-t, y, P1, P2, P3 = runge_kutta(f, t0, y0, tEnd, tau)
+t, y, P1, P2, P3 = runge_kutta(f_1_center, t0, y0, tEnd, tau, params)
 
 
 # fig = plt.figure()
