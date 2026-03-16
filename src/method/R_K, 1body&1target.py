@@ -192,7 +192,7 @@ fig.add_trace(go.Scatter3d(x=df['x'], y=df['y'], z=df['z'],
                                colorscale='Viridis'),
                            opacity=0.5))
 
-fig.add_trace(go.Scatter3d(x=df1['x'], y=df1['y'], z=df1['z'],
+fig.add_trace(go.Scatter3d(x=df.iloc[-1]['x'], y=df.iloc[-1]['y'], z=df.iloc[-1]['z'],
                            mode='markers',
                            name='актуальное положение цели',
                            marker=dict(

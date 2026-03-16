@@ -205,8 +205,4 @@ fig.add_trace(go.Scatter3d(x=df3['x'], y=df3['y'], z = df3['z'],
 # =============================================================================
 
 
-
-
-
-
-plot(fig)
+fig.write_html('../../data/prob_v1.html')

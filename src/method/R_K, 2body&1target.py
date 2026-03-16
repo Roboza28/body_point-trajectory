@@ -11,109 +11,6 @@ from src.models.target_1 import f_2_center
 from src.utils.utils import params_tuple
 
 
-def derivative_vector(vector_act: np.ndarray, vector_old: np.ndarray, dt: float):
-    vector_x = (vector_act[0] - vector_old[0]) / dt
-    vector_y = (vector_act[1] - vector_old[1]) / dt
-    vector_z = (vector_act[2] - vector_old[2]) / dt
-    
-    vector_new = np.array([vector_x, vector_y, vector_z])
-
-    return vector_new
-
-
-def runge_kutta(func, t_start, y0, t_end, h, params_task):
-    # def increment(f, t, y, tau):
-    #       k1 = tau * f(t,y)
-    #       k2 = tau * f(t+(1/4)*tau,y+(1/4)*k1)
-    #       k3 = tau * f(t+(3/8)*tau,y+(3/32)*k1+(9/32)*k2)
-    #       k4 = tau * f(t+(12/13)*tau,y+(1932/2197)*k1-(7200/2197)*k2+(7296/2197)*k3)
-    #       k5 = tau * f(t+tau,y+(439/216)*k1-8*k2+(3680/513)*k3 -(845/4104)*k4)
-    #       k6 = tau * f(t+(1/2)*tau,y-(8/27)*k1+2*k2-(3544/2565)*k3 +(1859/4104)*k4-(11/40)*k5)
-    #       return (16/135)*k1+(6656/12825)*k3+(28561/56430)*k4-(9/50)*k5+(2/55)*k6
-
-
-    t = []
-    y = []
-    t.append(t_start)
-    y.append(y0)
-
-    E = []
-    # P = []
-    # P1 = []
-    # P2 = []
-    # P3 = []
-    #PK2q = []
-
-    while t_start < t_end:
-
-        y0 = y0 + rk4_step(func, y0, h, params_task)
-        t_start = t_start + h
-        t.append(t_start)
-        y.append(y0)
-
-        Rs = np.array([yC2[0],yC2[1],yC2[2]])
-        R  = np.array([y0[0],y0[1],y0[2]])
-        K1 = np.array([y0[3],y0[4],y0[5]])
-        K2 = np.array([y0[6],y0[7],y0[8]])
-
-        K1t = -A / np.linalg.norm(R) ** 3 * R - A / np.linalg.norm(R - Rs) ** 3 * (R - Rs)
-        K2t = -b / (m * j - b ** 2) * np.cross(K1, K2)
-        Rt  =  1 / (m * j - b ** 2) * (j * K1 - b * K2)
-
-        v = 1/(m*j-b**2) * (j * K1 - b * K2)
-        w = 1/(b**2-m*j) * (b * K1 - m * K2)
-
-        K = 1/2 * m * np.dot(v,v) + b * np.dot(v,w) + 1/2 * j * np.dot(w,w)
-        U = -A / np.linalg.norm(R) - A / np.linalg.norm(R - Rs)
-        E.append(K + U)
-        # print(K + U)
-
-        K2q = np.cross(R,K1) + K2
-        K2qt = np.cross(R,K1t)
-        R13 = 1/(np.linalg.norm(Rs-R)**3)
-        R3 = R13 + 1/(np.linalg.norm(R)**3)
-
-
-        # K1N = K1/np.linalg.norm(K1)
-        # P1.append(K1N)
-        # if np.linalg.norm(K2) != 0:
-        #     K2N = K2/np.linalg.norm(K2)
-        # else:
-        #     K2N = [0, 0, 0]
-        # P2.append(K2N)
-
-        #P1.append(np.linalg.norm(v))
-        #P2.append(np.linalg.norm(K1))
-        #P3.append(np.linalg.norm(K2))
-
-
-        # print(np.dot(K1N, K2N))
-        # print(np.dot(np.cross(R, K1), v + b/(m*j-b**2)*K2))
-        # print(np.linalg.norm(v + b/(m*j-b**2)*K2))
-        # print(np.dot(v + b/(m*j-b**2)*K2, v + b/(m*j-b**2)*K2))
-        # print(np.dot(np.cross(R, K1), v + b/(m*j-b**2)*K2))
-        # print(np.dot(v, v)+2*b*j/(m*j-b**2)**2*np.dot(K1, K2))
-        # print(np.dot(K2t, K1))
-        # print(np.dot(K1T, v+np.cross(w, R)))
-        # print(np.dot(np.cross(R, K1T), w) + np.dot(K1T, v))
-
-        # print(np.cross(Rt + b /(m*j - b**2) * K2, K1))
-
-        # F = Rt + b /(m*j - b**2) * K2
-        # print(np.dot(F, K1)/(np.sqrt(np.dot(F, F)) * np.sqrt(np.dot(K1, K1))))
-        # print(np.sqrt(np.dot(F, F)))
-
-
-        # print(np.dot(K2q, [1,0,0]))
-        # print(np.linalg.norm(K2q))
-        # print(np.dot(K2q, K2qt))
-
-
-        # print('-'*20)
-        #P1.append(np.linalg.norm(K1))
-
-    return np.array(t), np.array(y), np.array(E), [1, 2, 3], [4, 5, 6]
-
 
 y0 =  np.array([5, 0, 0,
                 0., 0.322386, 0.0969581,
@@ -152,9 +49,9 @@ yC2 = [0.5,0,0]
 
 t0_task = 0
 tEnd_task = 100
-n_task = tEnd_task * 100
+n_task = 10000
 tau = (tEnd_task - t0_task) / n_task
-t = np.linspace(t0_task, tEnd_task, n_task)
+
 
 params = params_tuple(m, j, b, A, yC2)
 t_sol, y_sol, E_sol, *other_data = Solver(f_2_center, rk4_step, t0_task, tEnd_task, tau, y0, params).solve()
