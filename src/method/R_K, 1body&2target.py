@@ -1,6 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import *
+
+from src.models.runge_kutta import rk4_step
+from src.models.solver import B2T2
+from src.models.target_2 import f_2_center
+from src.utils.utils import params_tuple
+
 
 def rungeKutta(f, t0, y0, tEnd, tau):
          def increment(f, t, y, tau):
@@ -91,7 +95,14 @@ t = np.linspace(t0,tEnd,n)
 y0 =  np.array([5, 0, 0,    0., 0.322386, 0.0969581,    0, 0.48479, -1.44494,10, 0, 0,    0., 0.322386, 0.1869581,    0, 0.48479, -1.44494])
 
 #t, y, E = rungeKutta(f, t0, y0, tEnd, tau)
-t, y = rungeKutta(f, t0, y0, tEnd, tau)
+# t, y = rungeKutta(f, t0, y0, tEnd, tau)
+
+
+params = params_tuple(m, j, b, A, [[yC1, yC2]], 0)
+solver = B2T2(f_2_center, rk4_step, t0, tEnd, tau, y0, params)
+solver.solve()
+solver.create_plotly_graph()
+solver.create_graph_energy()
 
 # =============================================================================
 # fig = plt.figure()
@@ -191,5 +202,5 @@ fig.add_trace(go.Scatter3d(x=df2['x'], y=df2['y'], z = df2['z'],
 #                          colorscale='Viridis')))
 # =============================================================================
 
-# plot(fig)
-fig.write_html('../../data/trajectory_rk_1b_2t.html')
+plot(fig)
+# fig.write_html('../../data/trajectory_rk_1b_2t.html')

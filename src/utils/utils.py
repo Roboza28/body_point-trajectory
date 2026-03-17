@@ -2,7 +2,7 @@ from collections import namedtuple
 import numpy as np
 
 
-params_tuple = namedtuple('params' , 'm, j, b, A, yC2')
+params_tuple = namedtuple('params' , 'm, j, b, A, yC2, B')
 
 
 def angle_between(vector_1, vector_2):
