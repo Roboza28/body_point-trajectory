@@ -19,12 +19,12 @@ B = 0.1
 
 t0 = 0
 tEnd = 500
-n = tEnd* 100
+n = tEnd * 100
 tau = (tEnd-t0)/n
 t = np.linspace(t0,tEnd,n)
 
 
-params = params_tuple(m, j, b, A, [], B)
+params = params_tuple(m, j, b, A, np.array([0, 0, 0]), B)
 solver = B1T1(f_1_center_and_magnetic_field, rk4_step, t0, tEnd, tau, y0, params)
 solver.solve()
 solver.create_plotly_graph()

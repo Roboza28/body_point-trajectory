@@ -1,4 +1,6 @@
 import numpy as np
+
+from settings import G
 from src.models.solver import B1T1
 from src.models.runge_kutta import rk4_step
 from src.models.target_1 import f_1_center
@@ -67,6 +69,13 @@ y0 = np.array([5, 0, 0, 0., 0.322386, 0.0969581, 0, 0.48479, -1.44494])
 # gamma_theory = math.atan(q * (m * j - b ** 2) / (b * k2y0 ** 2))
 
 
+# mc = np.sqrt(q / G)
+mc = np.sqrt(1 / (q * G))
+Rs = np.linalg.norm(np.array([5, 0, 0]))
+T = 2 * np.pi * Rs ** (3/2) / np.sqrt(G * 2 * mc)
+print(T)
+
+
 t0 = 0
 # tEnd = 1
 tEnd = 500
@@ -74,7 +83,7 @@ n = tEnd * 100
 tau = (tEnd - t0) / n
 
 
-params = params_tuple(m, j, b, q, [], 0)
+params = params_tuple(m, j, b, q, np.array([0, 0, 0]), 0)
 # t, y, E, P1, P2 = runge_kutta(f, t0, y0, tEnd, tau)
 # t, y, P1, P2, P3 = runge_kutta(f_1_center, t0, y0, tEnd, tau, params)
 solver = B1T1(f_1_center, rk4_step, t0, tEnd, tau, y0, params)

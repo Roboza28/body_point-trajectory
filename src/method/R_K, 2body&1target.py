@@ -1,4 +1,5 @@
 import numpy as np
+from settings import G
 from src.models.solver import B2T1
 from src.models.runge_kutta import rk4_step
 from src.models.target_1 import f_2_center
@@ -28,15 +29,21 @@ A = 1/2
 # A = 1
 
 
-yC2 = np.array([0.5, 0, 0])
+yC2 = [np.array([0, 0, 0]), np.array([0.5, 0, 0])]
+# yC2 = np.array([0.5, 0, 0])
 #yC2 = [0,0,0]
 #yC2 = [20,0,0]
 #yC2 = [0.5,0,0]
 
 
+mc = np.sqrt(A / G)
+Rs = np.linalg.norm(yC2[1] - yC2[0])
+T = 2 * np.pi * np.sqrt(Rs ** 3 / (G * mc))
+print(T)
+
 t0_task = 0
 tEnd_task = 100
-n_task = 10000
+n_task = 1000
 tau = (tEnd_task - t0_task) / n_task
 
 

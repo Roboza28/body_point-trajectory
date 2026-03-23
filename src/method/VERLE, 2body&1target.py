@@ -214,5 +214,5 @@ fig.add_trace(go.Scatter3d(x=df3['x'], y=df3['y'], z = df3['z'],
 #                          color=['green'])))
 # =============================================================================
 
-# plot(fig)
-fig.write_html('../../data/trajectory_verle_2b_1t.html')
+plot(fig)
+# fig.write_html('../../data/trajectory_verle_2b_1t.html')

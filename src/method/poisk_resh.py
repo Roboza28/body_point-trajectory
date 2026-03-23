@@ -206,4 +206,5 @@ fig.add_trace(go.Scatter3d(x=df3['x'], y=df3['y'], z = df3['z'],
                          colorscale='Viridis')))
 
 
-fig.write_html('../../data/poisk_resh.html')
+plot(fig)
+# fig.write_html('../../data/poisk_resh.html')
