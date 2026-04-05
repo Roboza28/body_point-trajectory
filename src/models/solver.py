@@ -3,6 +3,7 @@ import plotly.graph_objs as go
 from plotly.offline import plot
 import matplotlib.pyplot as plt
 from abc import ABC, abstractmethod
+from src.utils.Exceptions import WrongEnergyError, WrongDistanceError
 
 
 class Solver(ABC):
@@ -16,6 +17,7 @@ class Solver(ABC):
         self.y0 = y0
         self.fig = go.Figure()
 
+        self.R_start = None
         self.t = None
         self.y = None
         self.E = None
@@ -55,7 +57,7 @@ class Solver(ABC):
             energy_n1 = self.calc_prom_values(y_n1)
 
             if not np.allclose(energy_0, energy_n1, rtol=0.01, atol=0.0):
-                raise ValueError('Энергия меняется более, чем на один процент!\nРекомендуется взять шаг меньше')
+                raise WrongEnergyError('Энергия меняется более, чем на один процент!\nРекомендуется взять шаг меньше')
 
             y_n = y_n1
             t_n = t_n1
@@ -117,6 +119,8 @@ class B2T1(Solver):
         self.y = []
         self.y.append([self.y0[0:3], self.y0[3:6], self.y0[6:9]])
 
+        self.R_start = np.linalg.norm(self.y0[0:3])
+
     def change_y(self, y_n1):
         self.y.append([y_n1[0:3], y_n1[3:6], y_n1[6:9]])
 
@@ -125,6 +129,10 @@ class B2T1(Solver):
         R  = np.array([y_n[0], y_n[1], y_n[2]])
         K1 = np.array([y_n[3], y_n[4], y_n[5]])
         K2 = np.array([y_n[6], y_n[7], y_n[8]])
+
+        # print(np.linalg.norm(R))
+        if np.linalg.norm(R) > (self.R_start * 10):
+            raise WrongDistanceError('Тела-точка сошла с орбиты')
 
         K1t = (- self.params_task.A / np.linalg.norm(R - Rs1) ** 3 * (R - Rs1)
                - self.params_task.A / np.linalg.norm(R - Rs2) ** 3 * (R - Rs2))
@@ -137,13 +145,19 @@ class B2T1(Solver):
         w = 1 / (self.params_task.b ** 2 - self.params_task.m * self.params_task.j) * (
                     self.params_task.b * K1 - self.params_task.m * K2)
 
-        K = 1 / 2 * self.params_task.m * np.dot(v, v) + self.params_task.b * np.dot(v,
-                                                                                    w) + 1 / 2 * self.params_task.j * np.dot(
-            w, w)
-        # U = -self.params_task.A * (1 / (np.linalg.norm(R)))
-        U = -self.params_task.A / np.linalg.norm(R - Rs1) - self.params_task.A / np.linalg.norm(R - Rs2)
+        K = (1 / 2 * self.params_task.m * np.dot(v, v) +
+             self.params_task.b * np.dot(v,w) +
+             1 / 2 * self.params_task.j * np.dot(w, w))
+        U = - self.params_task.A / np.linalg.norm(R - Rs1) - self.params_task.A / np.linalg.norm(R - Rs2)
         E_act = K + U
         self.E.append(E_act)
+
+        K2q  = np.cross(R, K1) + K2
+        K2qt = np.cross(R, K1t)
+        print(np.dot(K2q, R))
+
+        LRL_vector = np.cross(K1, K2) - self.params_task.m * self.params_task.A * R / np.linalg.norm(R)
+        print(np.linalg.norm(LRL_vector))
 
         # K1N = K1 / np.linalg.norm(K1)
         # P1.append(K1N)
@@ -168,11 +182,6 @@ class B2T1(Solver):
         # P1.append(P11)
         # P2.append(P22)
 
-        # print(np.linalg.norm(np.dot(K1, K1)))
-
-        # K2q = np.cross(R, K1) + K2
-        # K2qt = np.cross(R, K1t)
-        # R3 = 1 / (np.linalg.norm(Rs1 - R) ** 3) + 1 / (np.linalg.norm(Rs2 - R) ** 3)
 
         # K1N = K1/np.linalg.norm(K1)
         # P1.append(K1N)
@@ -226,6 +235,79 @@ class B2T1(Solver):
         # fig.write_html('../../data/trajectory_rk_2b_1t.html')
 
 
+class B1T1(Solver):
+    def initialization(self):
+        self.y = []
+        self.y.append([self.y0[0:3], self.y0[3:6], self.y0[6:9]])
+
+    def change_y(self, y_n1):
+        self.y.append([y_n1[0:3], y_n1[3:6], y_n1[6:9]])
+        # pass
+
+    def calc_prom_values(self, y_n):
+        R  = np.array([y_n[0], y_n[1], y_n[2]])
+        K1 = np.array([y_n[3], y_n[4], y_n[5]])
+        K2 = np.array([y_n[6], y_n[7], y_n[8]])
+
+        # K1t = - q / np.linalg.norm(R)**3 * R - q / np.linalg.norm(R - Rs)**3
+        # K2t = -b / (m * j - b ** 2) * np.cross(K1, K2)
+
+        # e_theory = np.array([np.cos(gamma_theory), np.sin(gamma_theory), 0])
+        # e_practice = np.array([np.cos(gamma_practice), np.sin(gamma_practice), 0])
+
+        v = 1 / (self.params_task.m * self.params_task.j - self.params_task.b ** 2) * (
+                    self.params_task.j * K1 - self.params_task.b * K2)
+        w = 1 / (self.params_task.b ** 2 - self.params_task.m * self.params_task.j) * (
+                    self.params_task.b * K1 - self.params_task.m * K2)
+
+        K = 1 / 2 * self.params_task.m * np.dot(v, v) + self.params_task.b * np.dot(v, w) + 1 / 2 * self.params_task.j * np.dot(w, w)
+        U = -self.params_task.A * (1 / (np.linalg.norm(R)))
+        self.E.append(K + U)
+
+        LRL_vector = np.cross(K1, K2) - self.params_task.m * self.params_task.A * R / np.linalg.norm(R)
+        print(np.linalg.norm(LRL_vector))
+
+        # K1N = K1 / np.linalg.norm(K1)
+        # # P1.append(K1N)
+        # K2N = K2 / np.linalg.norm(K2)
+        # # P2.append(K2N)
+
+        # print(np.dot(K1N, K2N))
+        # print(np.dot(np.cross(R, K1), v + b/(m*j-b**2)*K2))
+        # print(np.linalg.norm(v + b/(m*j-b**2)*K2))
+        # print(np.dot(v + b/(m*j-b**2)*K2, v + b/(m*j-b**2)*K2))
+        # print(np.dot(v, v)+2*b*j/(m*j-b**2)**2*np.dot(K1, K2))
+        # print(np.dot(K2t, K1))
+
+
+        # print(np.dot(R/np.linalg.norm(R), K2N))
+        # print(w)
+        # P3.append(v / np.linalg.norm(v))
+        # P3.append(w / np.linalg.norm(w))
+        # P4.append(np.dot(v, e_practice))
+
+        # P11 = np.linalg.norm(w)
+        # P22 = np.linalg.norm(v)
+        # P1.append(P11)
+        # P2.append(P22)
+
+        # print(np.linalg.norm(np.dot(K1, K1)))
+        return K + U
+
+    def create_plotly_graph(self):
+        self.create_trajectory_for_plotly_graph(df=[self.y[:, 0, 0], self.y[:, 0, 1], self.y[:, 0, 2]],
+                                                name="траектория цели")
+
+        self.create_object_for_plotly_graph(df=[self.y[-1, 0, 0], self.y[-1, 0, 1], self.y[-1, 0, 2]],
+                                            name="актуальное положение цели", size=10, color='red')
+        self.create_object_for_plotly_graph(df=self.params_task.coord_centers,
+                                            name="массивный центр № 1", size=20, color='green')
+
+
+        plot(self.fig)
+        # fig.write_html('../../data/trajectory_rk_2b_1t.html')
+
+
 class B2T1_matpoint(Solver):
     def initialization(self):
         self.y = []
@@ -258,76 +340,6 @@ class B2T1_matpoint(Solver):
                                             name="массивный центр № 1", size=30, color='green')
         self.create_object_for_plotly_graph(df=self.params_task.coord_centers[1],
                                             name="массивный центр № 2", size=30, color='yellow')
-
-
-        plot(self.fig)
-        # fig.write_html('../../data/trajectory_rk_2b_1t.html')
-
-
-class B1T1(Solver):
-    def initialization(self):
-        self.y = []
-        self.y.append([self.y0[0:3], self.y0[3:6], self.y0[6:9]])
-
-    def change_y(self, y_n1):
-        self.y.append([y_n1[0:3], y_n1[3:6], y_n1[6:9]])
-        # pass
-
-    def calc_prom_values(self, y_n):
-        R  = np.array([y_n[0], y_n[1], y_n[2]])
-        K1 = np.array([y_n[3], y_n[4], y_n[5]])
-        K2 = np.array([y_n[6], y_n[7], y_n[8]])
-
-        # K1t = - q / np.linalg.norm(R)**3 * R - q / np.linalg.norm(R - Rs)**3
-        # K2t = -b / (m * j - b ** 2) * np.cross(K1, K2)
-
-        # e_theory = np.array([np.cos(gamma_theory), np.sin(gamma_theory), 0])
-        # e_practice = np.array([np.cos(gamma_practice), np.sin(gamma_practice), 0])
-
-        v = 1 / (self.params_task.m * self.params_task.j - self.params_task.b ** 2) * (
-                    self.params_task.j * K1 - self.params_task.b * K2)
-        w = 1 / (self.params_task.b ** 2 - self.params_task.m * self.params_task.j) * (
-                    self.params_task.b * K1 - self.params_task.m * K2)
-
-        K = 1 / 2 * self.params_task.m * np.dot(v, v) + self.params_task.b * np.dot(v, w) + 1 / 2 * self.params_task.j * np.dot(w, w)
-        U = -self.params_task.A * (1 / (np.linalg.norm(R)))
-        self.E.append(K + U)
-
-        K1N = K1 / np.linalg.norm(K1)
-        # P1.append(K1N)
-        K2N = K2 / np.linalg.norm(K2)
-        # P2.append(K2N)
-
-        # print(np.dot(K1N, K2N))
-        # print(np.dot(np.cross(R, K1), v + b/(m*j-b**2)*K2))
-        # print(np.linalg.norm(v + b/(m*j-b**2)*K2))
-        # print(np.dot(v + b/(m*j-b**2)*K2, v + b/(m*j-b**2)*K2))
-        # print(np.dot(v, v)+2*b*j/(m*j-b**2)**2*np.dot(K1, K2))
-        # print(np.dot(K2t, K1))
-
-
-        # print(np.dot(R/np.linalg.norm(R), K2N))
-        # print(w)
-        # P3.append(v / np.linalg.norm(v))
-        # P3.append(w / np.linalg.norm(w))
-        # P4.append(np.dot(v, e_practice))
-
-        # P11 = np.linalg.norm(w)
-        # P22 = np.linalg.norm(v)
-        # P1.append(P11)
-        # P2.append(P22)
-
-        # print(np.linalg.norm(np.dot(K1, K1)))
-        return K + U
-
-    def create_plotly_graph(self):
-        self.create_trajectory_for_plotly_graph(df=[self.y[:, 0, 0], self.y[:, 0, 1], self.y[:, 0, 2]],
-                                                name="траектория цели")
-
-        self.create_object_for_plotly_graph(df=[self.y[-1, 0, 0], self.y[-1, 0, 1], self.y[-1, 0, 2]],
-                                            name="актуальное положение цели", size=10, color='red')
-        self.create_object_for_plotly_graph(df=self.params_task.coord_centers,
-                                            name="массивный центр № 1", size=20, color='green')
 
 
         plot(self.fig)

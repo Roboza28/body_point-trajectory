@@ -42,8 +42,8 @@ T = 2 * np.pi * np.sqrt(Rs ** 3 / (G * mc))
 print(T)
 
 t0_task = 0
-tEnd_task = 100
-n_task = 1000
+tEnd_task = 500
+n_task = 100000
 tau = (tEnd_task - t0_task) / n_task
 
 
@@ -51,4 +51,4 @@ params = params_tuple(m, j, b, A, yC2, 0)
 solver = B2T1(f_2_center, rk4_step, t0_task, tEnd_task, tau, y0, params)
 solver.solve()
 solver.create_plotly_graph()
-solver.create_graph_energy()
+# solver.create_graph_energy()
