@@ -100,22 +100,22 @@ tau = (tEnd_task - t0_task) / n_task
 # df = pd.DataFrame(result, columns=['m', 'j', 'b', 'tag'])
 
 
-r0y  = np.arange(0, 11, 1)
-k10x = np.concatenate([np.arange(0, 1, 0.1), np.arange(1, 11, 1)])
-k10y = np.concatenate([np.arange(0, 1, 0.1), np.arange(1, 11, 1)])
-k10z = np.concatenate([np.arange(0, 1, 0.1), np.arange(1, 11, 1)])
-k20x = np.concatenate([np.arange(0, 1, 0.1), np.arange(1, 11, 1)])
-k20y = np.concatenate([np.arange(0, 1, 0.1), np.arange(1, 11, 1)])
-k20z = np.concatenate([np.arange(0, 1, 0.1), np.arange(1, 11, 1)])
-# r0y  = np.arange(1, 10, 1)
-# k10x = np.arange(0, 1, 0.1)
-# k10y = np.arange(0, 1, 0.1)
-# k10z = np.arange(0, 1, 0.1)
-# k20x = np.arange(0, 1, 0.1)
-# k20y = np.arange(0, 1, 0.1)
-# k20z = np.arange(0, 1, 0.1)
-combinations = list(product(r0y, k10x, k10y, k10z, k20x, k20y, k20z))
-# combinations = list(product(r0y, k10y, k10z, k20y, k20z))
+# r0y  = np.arange(0, 11, 1)
+# k10x = np.concatenate([np.arange(-1, 1, 0.2), np.arange(1, 6, 1), np.arange(-6, 1, 1)])
+# k10y = np.concatenate([np.arange(-1, 1, 0.2), np.arange(1, 6, 1), np.arange(-6, 1, 1)])
+# k10z = np.concatenate([np.arange(-1, 1, 0.2), np.arange(1, 6, 1), np.arange(-6, 1, 1)])
+# k20x = np.concatenate([np.arange(-1, 1, 0.2), np.arange(1, 6, 1), np.arange(-6, 1, 1)])
+# k20y = np.concatenate([np.arange(-1, 1, 0.2), np.arange(1, 6, 1), np.arange(-6, 1, 1)])
+# k20z = np.concatenate([np.arange(-1, 1, 0.2), np.arange(1, 6, 1), np.arange(-6, 1, 1)])
+r0y  = np.arange(1, 11, 1)
+k10x = np.arange(-11, 11, 1)
+k10y = np.arange(-11, 11, 1)
+k10z = np.arange(-11, 11, 1)
+k20x = np.arange(-11, 11, 1)
+k20y = np.arange(-11, 11, 1)
+k20z = np.arange(-11, 11, 1)
+# combinations = list(product(r0y, k10x, k10y, k10z, k20x, k20y, k20z))
+combinations = list(product(r0y, k10y, k10z, k20y, k20z))
 
 
 # for r0y_l, k10x_l, k10y_l, k10z_l, k20x_l, k20y_l, k20z_l in combinations:
@@ -189,4 +189,4 @@ if __name__ == "__main__":
     df = pd.DataFrame(results, columns=['r0', 'k1y', 'k1z', 'k2y', 'k2z', 'tag'])
     df = df[df['tag'] == 3]
 
-    df.to_excel('../../data/result5.xlsx', index=False)
+    df.to_excel('../../data/result6.xlsx', index=False)

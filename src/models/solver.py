@@ -130,8 +130,8 @@ class B2T1(Solver):
         K1 = np.array([y_n[3], y_n[4], y_n[5]])
         K2 = np.array([y_n[6], y_n[7], y_n[8]])
 
-        # print(np.linalg.norm(R))
-        if np.linalg.norm(R) > (self.R_start * 10):
+        # # print(np.linalg.norm(R))
+        if np.linalg.norm(R) > (self.R_start * 50):
             raise WrongDistanceError('Тела-точка сошла с орбиты')
 
         K1t = (- self.params_task.A / np.linalg.norm(R - Rs1) ** 3 * (R - Rs1)
@@ -154,10 +154,10 @@ class B2T1(Solver):
 
         K2q  = np.cross(R, K1) + K2
         K2qt = np.cross(R, K1t)
-        print(np.dot(K2q, R))
+        # print(np.dot(K2q, R))
 
         LRL_vector = np.cross(K1, K2) - self.params_task.m * self.params_task.A * R / np.linalg.norm(R)
-        print(np.linalg.norm(LRL_vector))
+        # print(np.linalg.norm(LRL_vector))
 
         # K1N = K1 / np.linalg.norm(K1)
         # P1.append(K1N)
@@ -218,9 +218,34 @@ class B2T1(Solver):
         # print('-'*20)
         # P1.append(np.linalg.norm(K1))
 
+        # b = self.params_task.b
+        # m = self.params_task.m
+        # j = self.params_task.j
+        # A = self.params_task.A
+        # # vt = Rt + b / (m * j - b ** 2) * K2
+        # # print(np.cross(K1, vt))
+        # # print(np.dot(vt, K1))
+        #
+        # vt  = np.cross(K1, K2) - m * A * R / np.linalg.norm(R)
+        # print(np.linalg.norm(vt))
+
         return E_act
 
     def create_plotly_graph(self):
+        # Rs1, Rs2 = self.params_task.coord_centers
+        # plt.scatter(Rs1[0], Rs1[1], c='green', marker='o', s=500, label='Притягивающий центр № 1')
+        # plt.scatter(Rs2[0], Rs2[1], c='yellow', marker='o', s=500, label='Притягивающий центр № 2')
+        # plt.plot(np.array(self.y[:, 0, 0]), np.array(self.y[:, 0, 1]), 'b-', label='', linewidth=1.5)
+        # plt.scatter(self.y[-1, 0, 0], self.y[-1, 0, 1], c='red', marker='o', s=100, label='Тело-точка')
+        # plt.title('Траектория материальной точки')
+        # plt.xlabel('X')
+        # plt.ylabel('Y')
+        # plt.grid(True, alpha=0.3)
+        # plt.gca().set_xticklabels([])
+        # plt.gca().set_yticklabels([])
+        # plt.legend(loc='upper right', labelspacing=2.0)
+        # plt.show()
+
         self.create_trajectory_for_plotly_graph(df=[self.y[:, 0, 0], self.y[:, 0, 1], self.y[:, 0, 2]],
                                                 name="траектория цели")
 
@@ -292,6 +317,18 @@ class B1T1(Solver):
         # P2.append(P22)
 
         # print(np.linalg.norm(np.dot(K1, K1)))
+
+        b = self.params_task.b
+        m = self.params_task.m
+        j = self.params_task.j
+        A = self.params_task.A
+        # vt = Rt + b / (m * j - b ** 2) * K2
+        # print(np.cross(K1, vt))
+        # print(np.dot(vt, K1))
+
+        vt  = np.cross(K1, K2) - m * A * R / np.linalg.norm(R)
+        print(np.linalg.norm(vt))
+
         return K + U
 
     def create_plotly_graph(self):
@@ -328,9 +365,34 @@ class B2T1_matpoint(Solver):
         U = -self.params_task.A * (1 / (np.linalg.norm(R - Rs1)) + 1 / (np.linalg.norm(R - Rs2)))
         self.E.append(K + U)
 
+        # K1 = self.params_task.m * v
+        # K2Q = np.cross(R, K1)
+        # R1 = R - Rs2
+        # K1t = - self.params_task.A * R / np.linalg.norm(R)**3 - self.params_task.A * R1 / np.linalg.norm(R1)**3
+        # K2Qt = np.cross(R, K1t)
+        # eK2Q = K2Q / np.linalg.norm(K2Q)
+        # # print(eK2Q)
+        # print(np.dot(K2Q, R1))
+        # R1 = R - Rs2
+        # print(np.cross(R, R1))
+
         return self.E
 
     def create_plotly_graph(self):
+        # Rs1, Rs2 = self.params_task.coord_centers
+        # plt.scatter(Rs1[0], Rs1[1], c='green', marker='o', s=500, label='Притягивающий центр № 1')
+        # plt.scatter(Rs2[0], Rs2[1], c='yellow', marker='o', s=500, label='Притягивающий центр № 2')
+        # plt.plot(np.array(self.y[:, 0, 0]), np.array(self.y[:, 0, 1]), 'b-', label='', linewidth=1.5)
+        # plt.scatter(self.y[-1, 0, 0], self.y[-1, 0, 1], c='red', marker='o', s=100, label='Тело-точка')
+        # plt.title('Траектория материальной точки')
+        # plt.xlabel('X')
+        # plt.ylabel('Y')
+        # plt.grid(True, alpha=0.3)
+        # plt.gca().set_xticklabels([])
+        # plt.gca().set_yticklabels([])
+        # plt.legend(loc='upper right', labelspacing=2.0)
+        # plt.show()
+
         self.create_trajectory_for_plotly_graph(df=[self.y[:, 0, 0], self.y[:, 0, 1], self.y[:, 0, 2]],
                                                 name="траектория цели")
 

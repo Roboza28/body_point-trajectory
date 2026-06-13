@@ -8,6 +8,7 @@ from src.utils.utils import params_tuple
 m = 1
 A = 1/2
 
+# x0 = 2
 x0 = 1
 y0 = 0
 z0 = 0
@@ -16,6 +17,7 @@ vy0 = 1.1
 vz0 = 0
 
 y0 = np.array([x0, vx0, y0, vy0, z0, vz0])
+# yC2 = [np.array([0, 0, 0]), np.array([1, 0, 0])]
 yC2 = [np.array([0, 0, 0]), np.array([0.1, 0, 0])]
 
 t0 = 0
