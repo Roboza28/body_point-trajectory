@@ -261,8 +261,8 @@ def f(t, y):
 
 
 
-y0 =  np.array([1/2, 0, -1,    0, 0.5 , 0.1,    0, 0, 0])  #!! отличное решение
-# y0 =  np.array([1/2, 0, -1,    0, 0.1 , 0.1,    0, 0, 0])  #!! отличное решение
+# y0 =  np.array([1/2, 0, -1,    0, 0.5 , 0.1,    0, 0, 0])  #!! отличное решение
+y0 =  np.array([1/2, 0, -1,    0, 0.1 , 0.1,    0, 0, 0])  #!! отличное решение
 # y0 =  np.array([1/2, 0, 1,    0, 0.1 , 0.5,    0, 0, 0])  #!! отличное решение
 # y0 =  np.array([1/2, 0, -1,    0, 0.01 , 0.1,    0, 0, 0])  #!! отличное решение
 
@@ -293,7 +293,7 @@ yC2 = [1,0,0]
 #yC2 = [0.5,0,0]
 
 t0 = 0
-tEnd = 100
+tEnd = 500
 n = tEnd * 100
 tau = (tEnd-t0)/n
 t = np.linspace(t0,tEnd,n)
@@ -304,15 +304,31 @@ t, y, E = rungeKutta(f, t0, y0, tEnd, tau)
 #print(E[0])
 #print(E[-1])
 
-fig = plt.figure()
-plt.title("Зависимость полной энергии от времени")
-plt.xlabel('t')
-plt.ylabel('E')
-plt.grid(True)
-plt.axis([t[0],t[-1],(E[0]+E[-1])/2-0.1,(E[0]+E[-1])/2+0.1])
-plt.plot(t[1:len(t)], E, 'k')
+# fig = plt.figure()
+# plt.title("Зависимость полной энергии от времени")
+# plt.xlabel('t')
+# plt.ylabel('E')
+# plt.grid(True)
+# plt.axis([t[0],t[-1],(E[0]+E[-1])/2-0.1,(E[0]+E[-1])/2+0.1])
+# plt.plot(t[1:len(t)], E, 'k')
 #plt.plot(t[1:len(t)], P, 'k')
 
+
+yf = y[:, :3]
+Rs1, Rs2 = [0, 0, 0], yC2
+# plt.scatter(Rs1[0], Rs1[1], c='green', marker='o', s=500, label='Притягивающий центр № 1')
+# plt.scatter(Rs2[0], Rs2[1], c='yellow', marker='o', s=500, label='Притягивающий центр № 2')
+plt.plot(np.array(yf[:, 1]), np.array(yf[:, 2]), 'b-', label='', linewidth=1.5)
+plt.scatter(yf[-1, 1], yf[-1, 2], c='red', marker='o', s=100, label='Тело-точка')
+# plt.title('Траектория материальной точки')
+plt.xlabel('Y')
+plt.ylabel('Z')
+plt.grid(True, alpha=0.3)
+plt.gca().set_xticklabels([])
+plt.gca().set_yticklabels([])
+plt.legend(loc='upper right', labelspacing=2.0)
+plt.axis('equal')  # Одинаковый масштаб по X и Y
+plt.show()
 
 #plt.plot(t[1:len(t)], P1, 'k')
 
