@@ -193,27 +193,27 @@ def rungeKutta(f, t0, y0, tEnd, tau):
                   #print(np.dot(K2qT,R))
                   #print(np.dot(K2q,RT))
                   #print('-'*20)
-                  if t0 > 2*tau:   
-                      # v_xx = (R[0] - x_st) / tau
-                      # v_yy = (R[1] - y_st) / tau
-                      # v_zz = (R[2] - z_st) / tau
-                      
-                      # v_nnum = np.array([v_xx,v_yy,v_zz])
-                      
-                      print((np.linalg.norm(R) - np.linalg.norm(R_st)) / tau)#, np.linalg.norm(v))
-                      # v_num = my_direvative(R, R_st, tau)
-                      
-                      # v1_num = my_direvative(Rs-R, R1_st, tau)
-                      
-                      # print(Rs-R,R1_st)
-                      # print(np.linalg.norm(v_num),np.linalg.norm(v1_num))
-                  
-                  if t0>0:
-                      # x_st = R[0]
-                      # y_st = R[1]
-                      # z_st = R[2]
-                      R_st = R
-                      R1_st = Rs-R
+                  # if t0 > 2*tau:
+                  #     # v_xx = (R[0] - x_st) / tau
+                  #     # v_yy = (R[1] - y_st) / tau
+                  #     # v_zz = (R[2] - z_st) / tau
+                  #
+                  #     # v_nnum = np.array([v_xx,v_yy,v_zz])
+                  #
+                  #     print((np.linalg.norm(R) - np.linalg.norm(R_st)) / tau)#, np.linalg.norm(v))
+                  #     # v_num = my_direvative(R, R_st, tau)
+                  #
+                  #     # v1_num = my_direvative(Rs-R, R1_st, tau)
+                  #
+                  #     # print(Rs-R,R1_st)
+                  #     # print(np.linalg.norm(v_num),np.linalg.norm(v1_num))
+                  #
+                  # if t0>0:
+                  #     # x_st = R[0]
+                  #     # y_st = R[1]
+                  #     # z_st = R[2]
+                  #     R_st = R
+                  #     R1_st = Rs-R
                     
                   
                   # print(f'K1: {np.linalg.norm(K1)}')
@@ -229,7 +229,7 @@ def rungeKutta(f, t0, y0, tEnd, tau):
                   # if t0 > 2*tau:  
                   #     print(f'v1: {np.linalg.norm(v1_num)}')
                   
-                  print('-'*20)
+                  # print('-'*20)
                   #P1.append(np.linalg.norm(K1))
                   
          return np.array(t), np.array(y), np.array(E)# , np.array(P1), np.array(P2)# , np.array(P3)
@@ -252,30 +252,30 @@ def f(t, y):
          f[8] = -b/(m*j-b**2)*(y[3]*y[7] - y[4]*y[6])
          return f
      
-y0 =  np.array([5, 0, 0,    0., 0.322386, 0.0969581,    0, 0.48479, -1.44494])
+# y0 =  np.array([5, 0, 0,    0., 0.322386, 0.0969581,    0, 0.48479, -1.44494])
 # y0 =  np.array([5, 0, 0,    0., 1, 0.0969581,    0, 0.48479, -1.44494])
 
-# y0 =  np.array([1/2, 0, 0,    0, 1, 0,    0, 0, 0]) 
+# y0 =  np.array([1/2, 0, 0,    0, 1, 0,    0, 0, 0])
 
 
 
 
 
-#y0 =  np.array([1/2, 0, -1,    0, 0.5 , 0.1,    0, 0, 0])  #!! отличное решение
-#y0 =  np.array([1/2, 0, -1,    0, 0.1 , 0.1,    0, 0, 0])  #!! отличное решение
-#y0 =  np.array([1/2, 0, 1,    0, 0.1 , 0.5,    0, 0, 0])  #!! отличное решение
-#y0 =  np.array([1/2, 0, -1,    0, 0.01 , 0.1,    0, 0, 0])  #!! отличное решение
+y0 =  np.array([1/2, 0, -1,    0, 0.5 , 0.1,    0, 0, 0])  #!! отличное решение
+# y0 =  np.array([1/2, 0, -1,    0, 0.1 , 0.1,    0, 0, 0])  #!! отличное решение
+# y0 =  np.array([1/2, 0, 1,    0, 0.1 , 0.5,    0, 0, 0])  #!! отличное решение
+# y0 =  np.array([1/2, 0, -1,    0, 0.01 , 0.1,    0, 0, 0])  #!! отличное решение
 
 
 
-#y0 =  np.array([2/3, 0, 0,    0, 0.05 , 1,    0.1, 0, 0])  #!! отличное решение
+# y0 =  np.array([2/3, 0, 0,    0, 0.05 , 1,    0.1, 0, 0])  #!! отличное решение
     
 
 
 m = 1
 j = 1
-b = 0.7
-#b = 0.2
+# b = 0.7
+b = 0.2
 A = 1/2
 
 # A = 1
@@ -287,7 +287,7 @@ K21 = np.array([y0[6],y0[7],y0[8]])
 #v1 = 1/(m*j-b**2) * (j*K11 - b*K21)
 #print((j/b)*K11-((m*j-b**2)/b)*v1 + np.cross(R1,K11))
 
-yC2 = [0.1,0,0]
+yC2 = [1,0,0]
 #yC2 = [0,0,0]
 #yC2 = [20,0,0]
 #yC2 = [0.5,0,0]
@@ -456,5 +456,5 @@ fig.add_trace(go.Scatter3d(x=dfk22['x'], y=dfk22['y'], z = dfk22['z'],
 #                          color=['green'])))
 # =============================================================================
 
-# plot(fig)
-fig.write_html('../../data/trajectory_rk_2b_1t.html')
+plot(fig)
+# fig.write_html('../../data/trajectory_rk_2b_1t.html')
