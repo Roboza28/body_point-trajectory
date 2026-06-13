@@ -261,8 +261,8 @@ def f(t, y):
 
 
 
-# y0 =  np.array([1/2, 0, -1,    0, 0.5 , 0.1,    0, 0, 0])  #!! отличное решение
-y0 =  np.array([1/2, 0, -1,    0, 0.1 , 0.1,    0, 0, 0])  #!! отличное решение
+y0 =  np.array([1/2, 0, -1,    0, 0.5 , 0.1,    0, 0, 0])  #!! отличное решение
+# y0 =  np.array([1/2, 0, -1,    0, 0.1 , 0.1,    0, 0, 0])  #!! отличное решение
 # y0 =  np.array([1/2, 0, 1,    0, 0.1 , 0.5,    0, 0, 0])  #!! отличное решение
 # y0 =  np.array([1/2, 0, -1,    0, 0.01 , 0.1,    0, 0, 0])  #!! отличное решение
 
@@ -318,7 +318,7 @@ yf = y[:, :3]
 Rs1, Rs2 = [0, 0, 0], yC2
 # plt.scatter(Rs1[0], Rs1[1], c='green', marker='o', s=500, label='Притягивающий центр № 1')
 # plt.scatter(Rs2[0], Rs2[1], c='yellow', marker='o', s=500, label='Притягивающий центр № 2')
-plt.plot(np.array(yf[:, 1]), np.array(yf[:, 2]), 'b-', label='', linewidth=1.5)
+plt.plot(np.array(yf[:, 1]), np.array(yf[:, 2]), color='grey', linestyle='-', label='', linewidth=1)
 plt.scatter(yf[-1, 1], yf[-1, 2], c='red', marker='o', s=100, label='Тело-точка')
 # plt.title('Траектория материальной точки')
 plt.xlabel('Y')
