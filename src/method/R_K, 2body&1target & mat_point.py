@@ -14,7 +14,8 @@ y0 = 0
 z0 = 0
 vx0 = 0
 vy0 = 1.1
-vz0 = 0.4
+vz0 = 0
+# vz0 = 0.4
 
 y0 = np.array([x0, vx0, y0, vy0, z0, vz0])
 yC2 = [np.array([0, 0, 0]), np.array([1, 0, 0])]
