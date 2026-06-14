@@ -8,20 +8,20 @@ from src.utils.utils import params_tuple
 m = 1
 A = 1/2
 
-# x0 = 2
-x0 = 1
+x0 = 2
+# x0 = 1
 y0 = 0
 z0 = 0
 vx0 = 0
 vy0 = 1.1
-vz0 = 0
+vz0 = 0.4
 
 y0 = np.array([x0, vx0, y0, vy0, z0, vz0])
-# yC2 = [np.array([0, 0, 0]), np.array([1, 0, 0])]
-yC2 = [np.array([0, 0, 0]), np.array([0.1, 0, 0])]
+yC2 = [np.array([0, 0, 0]), np.array([1, 0, 0])]
+# yC2 = [np.array([0, 0, 0]), np.array([0.1, 0, 0])]
 
 t0 = 0
-tEnd = 100
+tEnd = 500
 n = tEnd * 100
 tau = (tEnd - t0) / n
 

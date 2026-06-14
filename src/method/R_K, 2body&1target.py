@@ -30,8 +30,8 @@ A = 1/2
 # A = 1
 
 
-# yC2 = [np.array([0, 0, 0]), np.array([0.5, 0, 0])]
-yC2 = [np.array([0, 0, 0]), np.array([0, 0, 0])]
+yC2 = [np.array([0, 0, 0]), np.array([0.5, 0, 0])]
+# yC2 = [np.array([0, 0, 0]), np.array([0, 0, 0])]
 # yC2 = np.array([0.5, 0, 0])
 #yC2 = [0,0,0]
 # yC2 = [np.array([0, 0, 0]), np.array([20,0,0])]
@@ -41,12 +41,12 @@ yC2 = [np.array([0, 0, 0]), np.array([0, 0, 0])]
 mc = np.sqrt(A / G)
 Rs = np.linalg.norm(yC2[1] - yC2[0])
 T = 2 * np.pi * np.sqrt(Rs ** 3 / (G * mc))
-print(T)
+# print(T)
 
 t0_task = 0
-tEnd_task = 1000
-n_task = 50000
-tau = (tEnd_task - t0_task) / n_task
+tEnd_task = 100
+n = tEnd_task * 100
+tau = (tEnd_task - t0_task) / n
 
 
 params = params_tuple(m, j, b, A, yC2, 0)
